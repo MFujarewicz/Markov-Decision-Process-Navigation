@@ -54,6 +54,8 @@ def main():
 
     printUtilities(utility_function, walls)
 
+    errorPlot()
+
     can_navigate, average_steps = check_navigation_and_average_steps_with_utility(walls, utility_function)
     if can_navigate:
         print("All points can navigate to the exit.")
@@ -61,6 +63,24 @@ def main():
     else:
         print("Some points cannot navigate to the exit.")
 
+
+def errorPlot():
+    error_data = []
+    with open(ERROR_INTERATION_FILENAME, 'r') as file:
+        for line in file:
+            error_data.append(float(line.strip()))
+
+
+    plt.figure(figsize=(10, 6))
+    plt.plot(error_data)
+    plt.xlabel('Numer Iteracji')
+    plt.ylabel('Błąd')
+    plt.title('Zmiana największego błędu')
+    plt.legend()
+    plt.grid(True)
+    plt.savefig('error_plot.png')
+    if SHOW_PLOTS:
+        plt.show()
 
 def learn(walls, weights, discount, epsilon):
     utility_function = np.zeros((N, N))
@@ -241,7 +261,7 @@ def printUtilities(utility_function, walls):
                 ax.add_patch(plt.Rectangle((j-0.5, i-0.5), 1, 1, fill=True, color=wall_color))
 
     cbar = fig.colorbar(cax, ax=ax, orientation='vertical')
-    cbar.set_label('Utility Value')
+    cbar.set_label('Funkcja Użyteczności')
 
     ax.grid(which='major', axis='both', linestyle='-', color='k', linewidth=2)
 
