@@ -3,7 +3,7 @@ from matplotlib import colors
 import numpy as np
 import random
 
-N = 15
+N = 20
 WALL_START_PROBABILITY = 0.9
 WALL_STOP_PROBABILITY = 0.01
 
@@ -19,7 +19,7 @@ EPSILON = 0.001
 DISCOUNT_FACTOR = 0.95
 
 
-SHOW_PLOTS = True
+SHOW_PLOTS = False
 
 
 ERROR_INTERATION_FILENAME = "error_iterations.txt"
@@ -62,7 +62,6 @@ def main():
         print("Some points cannot navigate to the exit.")
 
 
-
 def learn(walls, weights, discount, epsilon):
     utility_function = np.zeros((N, N))
     biggest_change = 999
@@ -97,7 +96,16 @@ def learn(walls, weights, discount, epsilon):
 
         with open(ERROR_INTERATION_FILENAME, 'a') as file:
             file.write(str(biggest_change) + '\n')
+
         utility_function = next_utility_function
+
+
+        can_navigate, average_steps = check_navigation_and_average_steps_with_utility(walls, utility_function)
+        with open(AVERAGE_STEPS_FILENAME, 'a') as file:
+            if can_navigate:
+                file.write(str(average_steps) + '\n')
+            else:
+                file.write('False\n')
 
     return utility_function
 
